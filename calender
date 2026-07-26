@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Pretendard:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;padding:0;background:transparent;}
+  .cal-card{
+    max-width:340px;margin:0 auto;
+    border-radius:20px;overflow:hidden;
+    font-family:'Pretendard',sans-serif;
+    box-shadow:0 12px 30px rgba(0,0,0,0.12);
+  }
+  .cal-header{
+    position:relative;height:150px;
+    background-image:url('https://i.ibb.co/pB9t92j3/aesthetic-wallpaper.jpg');
+    background-size:cover;background-position:center;
+    display:flex;align-items:flex-end;justify-content:center;
+    padding-bottom:16px;
+  }
+  .cal-header::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.35));}
+  .cal-month{position:relative;z-index:2;display:flex;align-items:center;gap:14px;color:#fff;font-family:'Playfair Display',serif;font-weight:900;font-size:26px;}
+  .cal-month span{font-weight:400;font-style:italic;font-size:20px;opacity:.85;}
+  .cal-nav{
+    position:relative;z-index:2;background:none;border:none;color:#fff;
+    font-size:20px;cursor:pointer;padding:0 10px;opacity:.8;
+  }
+  .cal-nav:hover{opacity:1;}
+  .cal-body{background:#fff;padding:18px 14px 22px;}
+  table{width:100%;border-collapse:collapse;}
+  th{font-size:11px;letter-spacing:1px;color:#8a8a8a;font-weight:600;padding:6px 0;}
+  td{text-align:center;padding:9px 0;font-size:14px;color:#2a2a2a;position:relative;}
+  td.muted{color:#d5d5d5;}
+  td.today{font-weight:700;background:#F1EDF9;border-radius:50%;}
+  td.range{background:#8E7FC7;color:#fff;border-radius:0;}
+  td.range-start{border-radius:50% 0 0 50%;}
+  td.range-end{border-radius:0 50% 50% 0;}
+</style>
+</head>
+<body>
+
+<div class="cal-card">
+  <div class="cal-header">
+    <button class="cal-nav" id="prevBtn">&#10094;</button>
+    <div class="cal-month"><span id="monthLabel">March</span> <span id="yearLabel">2026</span></div>
+    <button class="cal-nav" id="nextBtn">&#10095;</button>
+  </div>
+  <div class="cal-body">
+    <table>
+      <thead>
+        <tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th><th>SUN</th></tr>
+      </thead>
+      <tbody id="calBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  // ---- 여기 두 값만 원하는 대로 바꾸세요 ----
+  var rangeStart = new Date(2026, 6, 20); // 강조 시작일 (7월20일)
+  var rangeEnd   = new Date(2026, 6, 25); // 강조 종료일 (7월25일)
+  // -------------------------------------------
+
+  var current = new Date();
+  var viewYear = current.getFullYear();
+  var viewMonth = current.getMonth();
+  var monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+  function sameDay(a,b){return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();}
+  function inRange(d){return d >= stripTime(rangeStart) && d <= stripTime(rangeEnd);}
+  function stripTime(d){return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
+
+  function render(){
+    document.getElementById("monthLabel").textContent = monthNames[viewMonth];
+    document.getElementById("yearLabel").textContent = viewYear;
+
+    var firstDay = new Date(viewYear, viewMonth, 1);
+    var startOffset = (firstDay.getDay()+6)%7; // 월요일 시작
+    var daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
+    var daysInPrevMonth = new Date(viewYear, viewMonth, 0).getDate();
+
+    var cells = [];
+    for(var i=startOffset;i>0;i--) cells.push({day:daysInPrevMonth-i+1, muted:true, date:new Date(viewYear, viewMonth-1, daysInPrevMonth-i+1)});
+    for(var d=1; d<=daysInMonth; d++) cells.push({day:d, muted:false, date:new Date(viewYear, viewMonth, d)});
+    while(cells.length % 7 !== 0) {
+      var nextDay = cells.length - (startOffset+daysInMonth) + 1;
+      cells.push({day:nextDay, muted:true, date:new Date(viewYear, viewMonth+1, nextDay)});
+    }
+
+    var html = "";
+    for(var r=0; r<cells.length/7; r++){
+      html += "<tr>";
+      for(var c=0; c<7; c++){
+        var cell = cells[r*7+c];
+        var cls = [];
+        if(cell.muted) cls.push("muted");
+        if(sameDay(cell.date, current)) cls.push("today");
+        if(inRange(stripTime(cell.date))) {
+          cls.push("range");
+          if(sameDay(cell.date, rangeStart)) cls.push("range-start");
+          if(sameDay(cell.date, rangeEnd)) cls.push("range-end");
+        }
+        html += '<td class="'+cls.join(" ")+'">'+cell.day+"</td>";
+      }
+      html += "</tr>";
+    }
+    document.getElementById("calBody").innerHTML = html;
+  }
+
+  document.getElementById("prevBtn").onclick = function(){
+    viewMonth--; if(viewMonth<0){viewMonth=11; viewYear--;} render();
+  };
+  document.getElementById("nextBtn").onclick = function(){
+    viewMonth++; if(viewMonth>11){viewMonth=0; viewYear++;} render();
+  };
+
+  render();
+</script>
+
+</body>
+</html>
