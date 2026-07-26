@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Pretendard:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#fff;}</style>
+</head>
+<body>
+
+<div style="
+  position:relative;
+  border-radius:20px;
+  overflow:hidden;
+  padding:56px 24px;
+  text-align:center;
+  max-width:720px;
+  margin:0 auto;
+  background-image:url('https://i.ibb.co/pB9t92j3/aesthetic-wallpaper.jpg');
+  background-size:cover;
+  background-position:center;
+  background-color:#111111;
+">
+  <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.35));"></div>
+
+  <div style="position:relative; display:flex; justify-content:center; gap:48px; flex-wrap:wrap;">
+    <div>
+      <div id="dd-days" style="font-family:'Playfair Display',serif; font-weight:900; font-size:56px; color:#1A1A1A; line-height:1;">0</div>
+      <div style="margin-top:8px; font-family:'Pretendard',sans-serif; font-size:11px; letter-spacing:3px; color:#8E7FC7; font-weight:600;">DAYS</div>
+    </div>
+    <div>
+      <div id="dd-hours" style="font-family:'Playfair Display',serif; font-weight:900; font-size:56px; color:#1A1A1A; line-height:1;">0</div>
+      <div style="margin-top:8px; font-family:'Pretendard',sans-serif; font-size:11px; letter-spacing:3px; color:#8E7FC7; font-weight:600;">HOURS</div>
+    </div>
+    <div>
+      <div id="dd-min" style="font-family:'Playfair Display',serif; font-weight:900; font-size:56px; color:#1A1A1A; line-height:1;">0</div>
+      <div style="margin-top:8px; font-family:'Pretendard',sans-serif; font-size:11px; letter-spacing:3px; color:#8E7FC7; font-weight:600;">MINUTES</div>
+    </div>
+    <div>
+      <div id="dd-sec" style="font-family:'Playfair Display',serif; font-weight:900; font-size:56px; color:#1A1A1A; line-height:1;">0</div>
+      <div style="margin-top:8px; font-family:'Pretendard',sans-serif; font-size:11px; letter-spacing:3px; color:#8E7FC7; font-weight:600;">SECONDS</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var startDate = new Date(2026, 6, 20, 0, 0, 0);
+  function updateCounter() {
+    var now = new Date();
+    var diff = now - startDate;
+    if (diff < 0) diff = 0;
+    var totalSeconds = Math.floor(diff / 1000);
+    var days = Math.floor(totalSeconds / 86400);
+    var hours = Math.floor((totalSeconds % 86400) / 3600);
+    var minutes = Math.floor((totalSeconds % 3600) / 60);
+    var seconds = totalSeconds % 60;
+    document.getElementById("dd-days").textContent = days;
+    document.getElementById("dd-hours").textContent = hours;
+    document.getElementById("dd-min").textContent = minutes;
+    document.getElementById("dd-sec").textContent = seconds;
+  }
+  updateCounter();
+  setInterval(updateCounter, 1000);
+</script>
+
+</body>
+</html>
